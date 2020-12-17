@@ -1,0 +1,143 @@
+---
+title: "FitActivity"
+author: "Derek Whipple"
+date: "12/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(caret)
+library(e1071)
+library(knitr)
+```
+
+## Executive Summary
+
+The purpose of this report is to predict how participants in an exercise study performed the exercise (how participants are classified). The data used comes from a study of 6 participants doing bicep curls. A training and test set have been provided in URLs as shown further below.
+
+## Model Building
+
+### Data Sets
+
+A training and test set were provided, but the given training set will be broken up into training and test sets. From this point forward the provided test set will be referred to as the validation set. The original training set will be partitioned such that 75% will be the training set and the remaining 25% will be the test set.
+
+The training set is intended to develop the models while the test set will help to determine which model shall be used as the final model to use against the validation set.
+
+```{r urls}
+
+trainingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+
+```
+
+```{r modeling, echo = FALSE}
+
+trainingFile <- "pml-training.csv"
+testingFile <- "pml-testing.csv"
+
+# uncomment these out when done testing rmarkdown
+#download.file(url = trainingUrl, destfile = trainingFile)
+#download.file(url = testingUrl, destfile = testingFile)
+
+origTrainingSet <- read.csv(trainingFile, na.strings = c("#DIV/0!", "NA"))
+validationSet <- read.csv(testingFile, na.strings = c("#DIV/0!", "NA"))
+
+# make everything reproducible
+set.seed(1000)
+
+```
+
+```{r clean}
+#
+# Clean up training and validation sets
+#
+# - remove columns that contains NAs. Causes issues when training a model
+# - Change classe column to factor type
+# - remove first 7 columns since they won't impact trying to determine the how accelerometer data relates to activity
+cleanOrigTrainingSet <- origTrainingSet[, apply(origTrainingSet, 2, function(x) !any(is.na(x)))]
+cleanOrigTrainingSet$classe <- as.factor(cleanOrigTrainingSet$classe)
+cleanOrigTrainingSet <- cleanOrigTrainingSet[, -c(1:7)]
+# use this training set while trying to build the rmarkdown output, then delete when everything is good
+cleanOrigTrainingSet <- cleanOrigTrainingSet[seq(1, nrow(cleanOrigTrainingSet), 20), ]
+
+# validation set does not have the classe column, so no need to set to factor type
+validationSet <- validationSet[, apply(validationSet, 2, function(x) !any(is.na(x)))]
+validationSet <- validationSet[, -c(1:7)]
+
+# now break up the original training into training and testing
+partition <- createDataPartition(y = cleanOrigTrainingSet$classe, p=0.75, list=FALSE)
+trainingSet <- cleanOrigTrainingSet[partition,]
+testingSet <- cleanOrigTrainingSet[-partition,]
+
+```
+
+### Generating Models
+
+Will try two different models and see which one performs the best.
+
+Will use:
+- Random Forest model
+- Support Vector Machine (SVM) model.
+
+Chose to use these two models because the class used Random Forests extensively, and SVM is used for classification analysis (which is what this project trying to accomplish).
+
+``` {r models}
+
+# Random Forest Model
+
+rfModelTraining <- train(classe ~., method = "rf", data = trainingSet)
+
+# predict testing set using training model
+rfPrediction <- predict(rfModelTraining, testingSet)
+# See how well the model worked
+rfConfusionMatrix <- confusionMatrix(testingSet$classe, rfPrediction)
+
+
+# SVM Model
+
+svmModelTraining <- svm(classe ~., data = trainingSet)
+
+# predict testing set using training model
+svmPrediction <- predict(svmModelTraining, testingSet)
+# See how well the model worked
+svmConfusionMatrix <- confusionMatrix(testingSet$classe, svmPrediction)
+
+```
+
+## Model Performance
+
+### Model Comparison
+
+Compare the Random Forest model performance vs. SVM model performance.
+
+#### Random Forest
+
+Predicting the test set of data using the Random Forest model has a confusion matrix that looks like:
+
+`r kable(rfConfusionMatrix$table)`
+
+Random Forest model accuracy: `r rfConfusionMatrix$overall[1]`
+
+#### SVM
+
+Predicting the test set of data using the SVM model has a confusion matrix that looks like:
+
+`r kable(svmConfusionMatrix$table)`
+
+SVM model accuracy: `r svmConfusionMatrix$overall[1]`
+
+### Model Comparison Conclusion
+
+Given the accuracy values, the Random Forest model performed better and will be used against the validation data set.
+
+The following table shows the results of the predictions for the validation set.
+
+```{r validation, echo = FALSE}
+
+# predict validation set using training model
+rfPredictionValidation <- predict(rfModelTraining, validationSet)
+
+data.frame(validationSet$problem_id, rfPredictionValidation)
+
+```
