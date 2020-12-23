@@ -349,7 +349,7 @@ summary {
 }
 
 .tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+  content: "???";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -357,12 +357,12 @@ summary {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
+  content: "???";
   border: none;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "???";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -439,8 +439,6 @@ testingUrl &lt;- &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pml-t
 cleanOrigTrainingSet &lt;- origTrainingSet[, apply(origTrainingSet, 2, function(x) !any(is.na(x)))]
 cleanOrigTrainingSet$classe &lt;- as.factor(cleanOrigTrainingSet$classe)
 cleanOrigTrainingSet &lt;- cleanOrigTrainingSet[, -c(1:7)]
-# use this training set while trying to build the rmarkdown output, then delete when everything is good
-cleanOrigTrainingSet &lt;- cleanOrigTrainingSet[seq(1, nrow(cleanOrigTrainingSet), 20), ]
 
 # validation set does not have the classe column, so no need to set to factor type
 validationSet &lt;- validationSet[, apply(validationSet, 2, function(x) !any(is.na(x)))]
@@ -480,7 +478,7 @@ svmConfusionMatrix &lt;- confusionMatrix(testingSet$classe, svmPrediction)</code
 <h2>Model Performance</h2>
 <div id="model-comparison" class="section level3">
 <h3>Model Comparison</h3>
-<p>Compare the Random Forest model performance vs. SVM model performance.</p>
+<p>Compare the Random Forest model performance vs.�SVM model performance.</p>
 <div id="random-forest" class="section level4">
 <h4>Random Forest</h4>
 <p>Predicting the test set of data using the Random Forest model has a confusion matrix that looks like:</p>
@@ -498,47 +496,47 @@ svmConfusionMatrix &lt;- confusionMatrix(testingSet$classe, svmPrediction)</code
 <tbody>
 <tr class="odd">
 <td align="left">A</td>
-<td align="right">66</td>
-<td align="right">1</td>
+<td align="right">1395</td>
 <td align="right">0</td>
-<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">B</td>
 <td align="right">4</td>
-<td align="right">41</td>
-<td align="right">1</td>
+<td align="right">939</td>
+<td align="right">5</td>
 <td align="right">1</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">C</td>
 <td align="right">0</td>
-<td align="right">6</td>
-<td align="right">36</td>
-<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">849</td>
+<td align="right">3</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">D</td>
-<td align="right">3</td>
 <td align="right">0</td>
-<td align="right">5</td>
-<td align="right">29</td>
-<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">795</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
 <td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
 <td align="right">0</td>
-<td align="right">37</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">896</td>
 </tr>
 </tbody>
 </table>
-<p>Random Forest model accuracy: 0.8600823</p>
+<p>Random Forest model accuracy: 0.9938825</p>
 </div>
 <div id="svm" class="section level4">
 <h4>SVM</h4>
@@ -557,47 +555,47 @@ svmConfusionMatrix &lt;- confusionMatrix(testingSet$classe, svmPrediction)</code
 <tbody>
 <tr class="odd">
 <td align="left">A</td>
-<td align="right">60</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">7</td>
+<td align="right">1385</td>
+<td align="right">5</td>
+<td align="right">3</td>
 <td align="right">0</td>
+<td align="right">2</td>
 </tr>
 <tr class="even">
 <td align="left">B</td>
-<td align="right">8</td>
-<td align="right">35</td>
+<td align="right">80</td>
+<td align="right">833</td>
+<td align="right">32</td>
 <td align="right">1</td>
-<td align="right">2</td>
-<td align="right">1</td>
+<td align="right">3</td>
 </tr>
 <tr class="odd">
 <td align="left">C</td>
-<td align="right">7</td>
-<td align="right">4</td>
-<td align="right">26</td>
-<td align="right">4</td>
-<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">38</td>
+<td align="right">809</td>
+<td align="right">6</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">D</td>
-<td align="right">4</td>
 <td align="right">1</td>
-<td align="right">5</td>
-<td align="right">24</td>
-<td align="right">6</td>
+<td align="right">1</td>
+<td align="right">85</td>
+<td align="right">717</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">E</td>
-<td align="right">1</td>
-<td align="right">10</td>
-<td align="right">6</td>
+<td align="right">0</td>
 <td align="right">2</td>
-<td align="right">26</td>
+<td align="right">18</td>
+<td align="right">18</td>
+<td align="right">863</td>
 </tr>
 </tbody>
 </table>
-<p>SVM model accuracy: 0.7037037</p>
+<p>SVM model accuracy: 0.9394372</p>
 </div>
 </div>
 <div id="model-comparison-conclusion" class="section level3">
@@ -605,14 +603,14 @@ svmConfusionMatrix &lt;- confusionMatrix(testingSet$classe, svmPrediction)</code
 <p>Given the accuracy values, the Random Forest model performed better and will be used against the validation data set.</p>
 <p>The following table shows the results of the predictions for the validation set.</p>
 <pre><code>##    validationSet.problem_id rfPredictionValidation
-## 1                         1                      C
+## 1                         1                      B
 ## 2                         2                      A
-## 3                         3                      A
+## 3                         3                      B
 ## 4                         4                      A
 ## 5                         5                      A
 ## 6                         6                      E
 ## 7                         7                      D
-## 8                         8                      D
+## 8                         8                      B
 ## 9                         9                      A
 ## 10                       10                      A
 ## 11                       11                      B

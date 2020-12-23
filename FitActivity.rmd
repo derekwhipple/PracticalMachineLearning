@@ -36,9 +36,8 @@ testingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.c
 trainingFile <- "pml-training.csv"
 testingFile <- "pml-testing.csv"
 
-# uncomment these out when done testing rmarkdown
-#download.file(url = trainingUrl, destfile = trainingFile)
-#download.file(url = testingUrl, destfile = testingFile)
+download.file(url = trainingUrl, destfile = trainingFile)
+download.file(url = testingUrl, destfile = testingFile)
 
 origTrainingSet <- read.csv(trainingFile, na.strings = c("#DIV/0!", "NA"))
 validationSet <- read.csv(testingFile, na.strings = c("#DIV/0!", "NA"))
@@ -58,8 +57,6 @@ set.seed(1000)
 cleanOrigTrainingSet <- origTrainingSet[, apply(origTrainingSet, 2, function(x) !any(is.na(x)))]
 cleanOrigTrainingSet$classe <- as.factor(cleanOrigTrainingSet$classe)
 cleanOrigTrainingSet <- cleanOrigTrainingSet[, -c(1:7)]
-# use this training set while trying to build the rmarkdown output, then delete when everything is good
-cleanOrigTrainingSet <- cleanOrigTrainingSet[seq(1, nrow(cleanOrigTrainingSet), 20), ]
 
 # validation set does not have the classe column, so no need to set to factor type
 validationSet <- validationSet[, apply(validationSet, 2, function(x) !any(is.na(x)))]
